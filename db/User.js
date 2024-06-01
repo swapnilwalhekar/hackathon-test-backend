@@ -6,9 +6,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter a valid email address"],
   },
-  role: String,
-  status: String,
-  contact: Number,
+  //   role: String,
+  //   status: String,
+  //   contact: Number,
   password: String,
 });
 

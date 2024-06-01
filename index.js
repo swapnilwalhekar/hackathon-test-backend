@@ -4,6 +4,7 @@ require("./db/config");
 const User = require("./db/User");
 const Roles = require("./db/Roles");
 const Jwt = require("jsonwebtoken");
+const AppUser = require("./db/AppUser");
 const jwtKey = "test";
 const app = express();
 
@@ -47,11 +48,61 @@ app.post("/login", async (req, resp) => {
   }
 });
 
+// -------------Users-------------------
+
+app.get("/app-users", async (req, resp) => {
+  const users = await AppUser.find();
+  if (users.length > 0) {
+    resp.send(users);
+  } else {
+    resp.send({ result: "No Users found" });
+  }
+});
+
+app.post("/add-appuser", async (req, resp) => {
+  let newUser = new AppUser(req.body);
+  let result = await newUser.save();
+  resp.send(result);
+});
+
+app.delete("/appuser/:id", async (req, resp) => {
+  let result = await AppUser.deleteOne({ _id: req.params.id });
+  resp.send(result);
+});
+
+app.get("/appuser/:id", async (req, resp) => {
+  let result = await AppUser.findOne({ _id: req.params.id });
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send({ result: "No Record Found." });
+  }
+});
+
+app.put("/appuser/:id", async (req, resp) => {
+  let result = await AppUser.updateOne(
+    { _id: req.params.id },
+    { $set: req.body }
+  );
+  resp.send(result);
+});
+
+app.get("/appuser-search/:key", async (req, resp) => {
+  let result = await AppUser.find({
+    $or: [
+      {
+        name: { $regex: req.params.key },
+      },
+    ],
+  });
+  resp.send(result);
+});
+
+// --------------Roles------------------
+
 app.post("/add-role", async (req, resp) => {
   let newRole = new Roles(req.body);
   let result = await newRole.save();
-  console.log({ ...req.body });
-  console.log(result);
   resp.send(result);
 });
 
