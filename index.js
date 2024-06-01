@@ -66,8 +66,13 @@ app.post("/add-appuser", async (req, resp) => {
 });
 
 app.delete("/appuser/:id", async (req, resp) => {
+  let selectedRole = await AppUser.findOne({ _id: req.params.id });
   let result = await AppUser.deleteOne({ _id: req.params.id });
-  resp.send(result);
+  if (result.acknowledged === true) {
+    resp.send(selectedRole);
+  } else {
+    resp.send({ result: "No Record Found." });
+  }
 });
 
 app.get("/appuser/:id", async (req, resp) => {
@@ -80,11 +85,16 @@ app.get("/appuser/:id", async (req, resp) => {
 });
 
 app.put("/appuser/:id", async (req, resp) => {
+  let selectedRole = await AppUser.findOne({ _id: req.params.id });
   let result = await AppUser.updateOne(
     { _id: req.params.id },
     { $set: req.body }
   );
-  resp.send(result);
+  if (result.acknowledged === true) {
+    resp.send(selectedRole);
+  } else {
+    resp.send({ result: "Error when updating." });
+  }
 });
 
 app.get("/appuser-search/:key", async (req, resp) => {
@@ -116,8 +126,13 @@ app.get("/roles", async (req, resp) => {
 });
 
 app.delete("/role/:id", async (req, resp) => {
+  let selectedRole = await Roles.findOne({ _id: req.params.id });
   let result = await Roles.deleteOne({ _id: req.params.id });
-  resp.send(result);
+  if (result.acknowledged === true) {
+    resp.send(selectedRole);
+  } else {
+    resp.send("error: " + error.message);
+  }
 });
 
 app.get("/role/:id", async (req, resp) => {
@@ -130,11 +145,16 @@ app.get("/role/:id", async (req, resp) => {
 });
 
 app.put("/role/:id", async (req, resp) => {
+  let selectedRole = await Roles.findOne({ _id: req.params.id });
   let result = await Roles.updateOne(
     { _id: req.params.id },
     { $set: req.body }
   );
-  resp.send(result);
+  if (result.acknowledged === true) {
+    resp.send(selectedRole);
+  } else {
+    resp.send({ result: "Error when updating." });
+  }
 });
 
 app.get("/search/:key", async (req, resp) => {
